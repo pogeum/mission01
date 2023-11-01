@@ -13,7 +13,9 @@
             <!--            3. 템플릿에서 게시물 목록 출력-->
             <ul>
                 <li th:each="post : ${postList}">
-                    <a th:href="@{|/detail/${post.id}|}" th:text="${post.title}"></a>
+
+                        <a th:href="@{|/detail/${post.id}|}" th:text="${post.title}" onclick="clickfunction "></a>
+
                 </li>
             </ul>
             <div>
@@ -42,3 +44,8 @@
 </div>
 </body>
 </html>
+<script>
+    function clickfunction() {
+        background : orange;
+    }
+</script>

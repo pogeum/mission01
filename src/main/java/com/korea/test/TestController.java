@@ -1,5 +1,6 @@
 package com.korea.test;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,12 +8,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+@RequiredArgsConstructor
 @Controller
 public class TestController {
 
     @Autowired
     private PostRepository postRepository;
+
+    private final PostService postService;
 
     @RequestMapping("/test")
     @ResponseBody public String test() {
@@ -22,7 +27,8 @@ public class TestController {
     @RequestMapping("/")
     public String main(Model model) {
         //1. DB에서 데이터 꺼내오기
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = postService.getList();
+
 
         //2. 꺼내온 데이터를 템플릿으로 보내기
         model.addAttribute("postList", postList);
@@ -54,7 +60,14 @@ public class TestController {
     @PostMapping("/update")
     public String update(Long id, String title, String content) {
         Post post = postRepository.findById(id).get();
-        post.setTitle(title);
+
+        if (title == null || title.isEmpty()) {
+
+            post.setTitle("제목없음");
+        }else {
+            post.setTitle(title);
+        }
+
         post.setContent(content);
 
         postRepository.save(post);
