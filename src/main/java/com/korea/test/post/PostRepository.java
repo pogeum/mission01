@@ -1,4 +1,4 @@
-package com.korea.test;
+package com.korea.test.post;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

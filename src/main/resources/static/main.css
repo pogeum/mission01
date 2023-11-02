@@ -23,6 +23,14 @@ a{
     display: flex;
 }
 
+.postbook {
+    background:darksalmon;
+    width:10%;
+    height:800px;
+    text-align: center;
+
+}
+
 .side-menu {
     background: indianred;
     width:10%;
@@ -35,6 +43,10 @@ a{
     width:90%;
 }
 
-.clickpost {
-    background: orange;
+.selectedpost {
+    background:orange;
+}
+
+.selectedbook {
+    background:pink;
 }

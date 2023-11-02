@@ -1,9 +1,7 @@
-package com.korea.test;
+package com.korea.test.post;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.korea.test.postbook.Postbook;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +19,6 @@ public class Post {
     private String content;
     private LocalDateTime createDate;
 
+    @ManyToOne
+    private Postbook postbook;
 }
