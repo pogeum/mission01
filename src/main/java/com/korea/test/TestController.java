@@ -73,4 +73,13 @@ public class TestController {
         postRepository.save(post);
         return "redirect:/detail/" + id;
     }
+///detail/{id}/delete
+    @PostMapping("/delete")
+    public String delete(Long id) {
+        postService.deletePost(id);
+        return "redirect:/";
+    }
+//    겟 포스트 헷갈림.,pathvariable하려면..url에 {id} 이렇게 값이잇어야되고..
+//    @GetMapping("/delete")
+
 }
