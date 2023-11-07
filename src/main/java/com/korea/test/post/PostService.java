@@ -1,5 +1,7 @@
 package com.korea.test.post;
 
+import com.korea.test.postbook.Postbook;
+import com.korea.test.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +13,15 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
 
-    public Post addDefaultPost() {
-        Post p = new Post();
-        p.setTitle("제목");
-        p.setContent("내용");
-        p.setCreateDate(LocalDateTime.now());
-        return this.postRepository.save(p);
+    public Post setDefaultPost(Postbook postbook,SiteUser user) {
+        Post post = new Post();
+        post.setTitle("제목");
+        post.setContent("내용");
+        post.setCreateDate(LocalDateTime.now());
+        post.setAuthor(user);
+        post.setPostbook(postbook);
+        //postbook.setPostList(postbook.getPostList());
+        return this.postRepository.save(post);
     }
 
     public List<Post> getList() {
@@ -35,11 +40,10 @@ public class PostService {
         return this.postRepository.findById(id).get();
     }
 
-    public void addPost(Post post) {
+    public void setPost(Post post, SiteUser user) {
         this.postRepository.save(post);
     }
     public void deletePost(Long id) {
-
         this.postRepository.deleteById(id);
     }
 }

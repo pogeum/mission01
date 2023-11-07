@@ -1,6 +1,7 @@
 package com.korea.test.post;
 
 import com.korea.test.postbook.Postbook;
+import com.korea.test.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,4 +22,7 @@ public class Post {
 
     @ManyToOne
     private Postbook postbook;
+
+    @ManyToOne
+    private SiteUser author;
 }

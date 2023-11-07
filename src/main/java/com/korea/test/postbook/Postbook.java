@@ -19,7 +19,7 @@ public class Postbook {
     private String title;
     //(mappedBy = "post", cascade = CascadeType.REMOVE)
 
-    @OneToMany(mappedBy = "postbook")
+    @OneToMany(mappedBy = "postbook",cascade = CascadeType.REMOVE)
     private List<Post> postList = new ArrayList<>();
 
 }

@@ -28,6 +28,7 @@ a{
     width:10%;
     height:800px;
     text-align: center;
+    overflow: auto;
 
 }
 
@@ -36,6 +37,7 @@ a{
     width:10%;
     height:800px;
     text-align: center;
+    overflow: auto;
 }
 
 .content {

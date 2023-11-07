@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,17 +7,43 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="logo">logo</div>
+    <div class="logo">
+        <a th:href="@{|/|}">logo</a>
+        <ul>
+<!--      로그인을 안한 상태라면 sec:authorize="isAnonymous()"가 참이되어 "로그인" 링크가 표시되고
+로그인을 한 상태라면 sec:authorize="isAuthenticated()"가 참이되어 "로그아웃" 링크가 표시될 것이다.-->
+            <li>
+                <a class="nav-link" sec:authorize="isAnonymous" th:href="@{|/user/login|}">로그인</a>
+                <a class="nav-link" sec:authorize="isAuthenticated" th:href="@{|/user/logout|}">로그아웃</a>
+            </li>
+            <li>
+                <a class="nav-link" th:href="@{|/user/signup|}">회원가입</a>
+            </li>
+        </ul>
+
+    </div>
     <div class="content-wrap">
         <div class="postbook">
             <ul>
                 <li th:each="postbook : ${postbookList}" th:class="${postbook.id == targetPostbook.id} ? 'selectedbook' : 'b' ">
-                    <a th:href="@{|/detail/${postbook.id}|}" th:text="${postbook.title}"></a>
+                    <a th:href="@{|/postbook/detail/${postbook.id}|}" th:text="${postbook.title}"></a>
                 </li>
             </ul>
             <div>
-                <form action="/addpostbook" method="post">
-                    <input type="submit" value="추가">
+                <form method="post">
+                    <div>
+                        <input type="hidden" name="postbookid" th:value="${targetPostbook.id}">
+                    </div>
+                    <div>
+                        <input type="submit" value="추가" formaction="/postbook/addpostbook">
+                    </div>
+                    <div>
+                        <input type="text" name="newtitle" th:value="${targetPostbook.title}">
+                        <input type="button" value="수정" onclick="postbookmodifytitle(this, ACTIONS_POSTBOOKUPDATE)">
+                    </div>
+                    <div>
+                        <input type="button" value="삭제" onclick="postbookdeleteFormAction(this, ACTIONS_POSTBOOKDELETE)">
+                    </div>
                 </form>
             </div>
         </div>
@@ -25,20 +51,18 @@
             <!--            3. 템플릿에서 게시물 목록 출력-->
             <ul>
                 <li th:each="post : ${postList}" th:class="${post.id == targetPost.id} ? 'selectedpost':''">
-
-                        <a th:href="@{|/detail/${targetPostbook.id}/${post.id}|}" th:text="${post.title}"></a>
-
+                    <a th:href="@{|/post/detail/${post.id}|}" th:text="${post.title}"></a>
                 </li>
             </ul>
             <div>
-                <form action="/write" method="post">
-                    <input type="hidden" name="id" th:value="${targetPostbook.id}">
+                <form action="/post/addpost" method="post">
+                    <input type="hidden" name="postbookid" th:value="${targetPostbook.id}">
                     <input type="submit" value="추가">
                 </form>
             </div>
         </div>
         <div class="content">
-            <form action="/update" method="post">
+            <form id="postupdateForm" method="post">
                 <div>
                     <input type="hidden" name="bookid" th:value="${targetPostbook.id}">
                 </div>
@@ -52,22 +76,51 @@
                     <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>
                 </div>
                 <div>
-                    <input type="submit" value="수정">
-                </div>
-            </form>
-            <form action="/delete" method="post">
-                <div>
-                    <input type="hidden" name="bookid" th:value="${targetPostbook.id}">
+                    <input type="button" value="수정" onclick="postupdateFormAction(this, ACTIONS_POSTUPDATE)">
                 </div>
                 <div>
-                    <input type="hidden" name="postid" th:value="${targetPost.id}">
-                </div>
-                <div>
-                    <input type="submit" value="삭제">
+                    <input type="button" value="삭제" onclick="postupdateFormAction(this, ACTIONS_POSTDELETE)">
                 </div>
             </form>
         </div>
     </div>
 </div>
+<script>
+    ACTIONS_POSTUPDATE = {
+        'url' : '/post/update',
+        'msg' : 'modify?'
+    };
+    ACTIONS_POSTDELETE = {
+        'url' : '/post/delete',
+        'msg' : 'delete?'
+    };
+
+    ACTIONS_POSTBOOKDELETE = {
+        'url' : '/postbook/deletepostbook',
+        'msg' : 'delete?'
+    };
+    function postupdateFormAction(input, action) {
+        if(confirm(action.msg)) {
+            input.form.action = action.url;
+            input.form.submit();
+        }
+    }
+    function postbookdeleteFormAction(input, action) {
+        if(confirm(action.msg)) {
+            input.form.action = action.url;
+            input.form.submit();
+        }
+    }
+    ACTIONS_POSTBOOKUPDATE = {
+        'url' : '/postbook/modifytitle',
+        'msg' : 'modify?'
+    };
+    function postbookmodifytitle(input, action) {
+        if(confirm(action.msg)) {
+            input.form.action = action.url;
+            input.form.submit();
+        }
+    }
+</script>
 </body>
 </html>

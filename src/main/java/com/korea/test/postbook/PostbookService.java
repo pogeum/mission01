@@ -16,29 +16,14 @@ public class PostbookService {
 
     public List<Postbook> getbookList() {
 
-        //
-//        if (this.postbookRepository.findAll().size() == 0) {
-//            Postbook p = new Postbook();
-//            p.setTitle("새노트");
-//
-//            postService.setPost(); // 기본 포스트
-//            p.setPostList(postService.getList());
-//
-//            this.postbookRepository.save(p);
-//        }
         return this.postbookRepository.findAll();
     }
 
-    public void addDefaultPostbook(Post post) {
-        Postbook p = new Postbook();
-        p.setTitle("새노트");
-
-        post.setPostbook(p);
-        p.getPostList().add(post);
-//        postService.setPost(); // 기본 포스트
-//        p.setPostList(postService.getList());
-
-        this.postbookRepository.save(p);
+    public Postbook setDefaultPostbook(){
+        Postbook postbook = new Postbook();
+        postbook.setTitle("새노트");
+        postbookRepository.save(postbook);
+        return this.postbookRepository.save(postbook);
     }
 
     public Postbook findPostbook(Long id) {
@@ -49,12 +34,6 @@ public class PostbookService {
         postbook.setTitle("새노트");
         postbook.getPostList().add(post);
         post.setPostbook(postbook);
-//        Post post = new Post();
-//        post.setTitle("new title..");
-//        post.setContent("");
-//        post.setCreateDate(LocalDateTime.now());
-//        postService.addPost(post);
-//        postbook.setPostList(postService.getList());
         this.postbookRepository.save(postbook);
     }
     public void deletePostbook(Long id) {
@@ -62,9 +41,8 @@ public class PostbookService {
         this.postbookRepository.deleteById(id);
     }
 
-
-
-
-
+    public  void setPostbook(Postbook postbook) {
+        this.postbookRepository.save(postbook);
+    }
 
 }
