@@ -33,9 +33,9 @@ public class UserSecurityService implements UserDetailsService {
         SiteUser siteUser = _siteUser.get();
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        if("admin".equals(username)) {
+        if("admin".equals(username)) {//->아이디가 admin 인사람이 admin권한을 갖는거
             authorities.add(new SimpleGrantedAuthority(UserRole.ADMIN.getValue()));
-        }else {
+        }else {                       //-> 그 외엔 user권한
             authorities.add(new SimpleGrantedAuthority(UserRole.USER.getValue()));
         }
         return new User(siteUser.getUsername(), siteUser.getPassword(), authorities);

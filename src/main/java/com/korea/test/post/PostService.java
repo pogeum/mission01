@@ -13,7 +13,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
 
-    public Post setDefaultPost(Postbook postbook,SiteUser user) {
+    public Post setDefaultPost(Postbook postbook, SiteUser user) {
         Post post = new Post();
         post.setTitle("제목");
         post.setContent("내용");
@@ -22,6 +22,11 @@ public class PostService {
         post.setPostbook(postbook);
         //postbook.setPostList(postbook.getPostList());
         return this.postRepository.save(post);
+    }
+
+    public void setPost(Post post, SiteUser user) {
+        post.setAuthor(user);
+        this.postRepository.save(post);
     }
 
     public List<Post> getList() {
@@ -40,9 +45,7 @@ public class PostService {
         return this.postRepository.findById(id).get();
     }
 
-    public void setPost(Post post, SiteUser user) {
-        this.postRepository.save(post);
-    }
+
     public void deletePost(Long id) {
         this.postRepository.deleteById(id);
     }

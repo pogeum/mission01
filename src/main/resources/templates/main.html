@@ -30,7 +30,7 @@
                 </li>
             </ul>
             <div>
-                <form method="post">
+                <form th:action method="post">
                     <div>
                         <input type="hidden" name="postbookid" th:value="${targetPostbook.id}">
                     </div>
@@ -55,14 +55,14 @@
                 </li>
             </ul>
             <div>
-                <form action="/post/addpost" method="post">
+                <form th:action="@{/post/addpost}" method="post">
                     <input type="hidden" name="postbookid" th:value="${targetPostbook.id}">
                     <input type="submit" value="추가">
                 </form>
             </div>
         </div>
         <div class="content">
-            <form id="postupdateForm" method="post">
+            <form th:action id="postupdateForm" method="post">
                 <div>
                     <input type="hidden" name="bookid" th:value="${targetPostbook.id}">
                 </div>
@@ -72,8 +72,19 @@
                 <div>
                     <input type="text" name="title" th:value="${targetPost.title}">
                 </div>
-                <div>
-                    <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>
+                <div class="toast-editor-custom">
+                    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+                    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+                    <div id="editor"></div>
+                    <script>
+                        const editor = new toastui.Editor({
+                        el: document.querySelector('#editor'),
+                        previewStyle: 'vertical',
+                        height: '500px',
+                        initialValue: ""
+                        });
+                    </script>
+<!--                    <textarea name="content" cols="30" rows="10" th:text="${targetPost.content}"></textarea>-->
                 </div>
                 <div>
                     <input type="button" value="수정" onclick="postupdateFormAction(this, ACTIONS_POSTUPDATE)">

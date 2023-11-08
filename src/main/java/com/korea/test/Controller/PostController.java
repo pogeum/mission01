@@ -4,11 +4,16 @@ import com.korea.test.post.Post;
 import com.korea.test.post.PostService;
 import com.korea.test.postbook.Postbook;
 import com.korea.test.postbook.PostbookService;
+import com.korea.test.user.SiteUser;
+import com.korea.test.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,14 +22,23 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     private final PostbookService postbookService;
+    private final UserService userService;
+//    @PreAuthorize("isAuthenticated()")
     @RequestMapping("/list")
     public String main(Model model) {
         //1. DB에서 데이터 꺼내오기
         List<Postbook> postbookList = postbookService.getbookList();
-
+//        SiteUser siteUser = this.userService.getUser(principal.getName());
         if(postbookList.size() == 0) {
             Postbook postbook = postbookService.setDefaultPostbook();
-            Post post = postService.setDefaultPost(postbook);
+
+            SiteUser siteUser = new SiteUser();
+            siteUser.setUsername("unknown");
+            siteUser.setCreateDate(LocalDateTime.now());
+            siteUser.setPassword("00");
+            siteUser.setEmail("unknown@unknown.com");
+            userService.setDefaultUser(siteUser);
+            Post post = postService.setDefaultPost(postbook,siteUser);
             return "redirect:/";
         }
 
@@ -56,21 +70,22 @@ public class PostController {
         model.addAttribute("targetPostbook",postbook);
         return "main";
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/addpost") //여기서에러 given id must not be null? 밑에 postbookid가 널인가
-    public String write(Long postbookid) { //타겟북아이디임
+    public String write(Long postbookid,Principal principal) { //타겟북아이디임
         //폼에서 받아오는거 name 이랑, 위함수 인자로 받아오는 거랑 변수명이 같아야됨!!!
         //만약 다르게 받아올려면 @RequestParam("id") Long postbookid 이렇게 해줘야됨!!!
         //에러해결
-        Post post = postService.setDefaultPost(postbookService.findPostbook(postbookid));
+        SiteUser siteUser = this.userService.getUser(principal.getName());
+        Post post = postService.setDefaultPost(postbookService.findPostbook(postbookid),siteUser);
         //포스트레파지토리에 저장+새로생성+포스트북연결
 
         return "redirect:/post/detail/" + post.getId();
     }
 
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/update")
-    public String update(Long postid, String title, String content) {
+    public String update(Long postid, String title, String content, Principal principal) {
         Post post = postService.findPost(postid);
         if (title == null || title.isEmpty()) {
 
@@ -78,8 +93,9 @@ public class PostController {
         }else {
             post.setTitle(title);
         }
+        SiteUser siteUser = this.userService.getUser(principal.getName());
         post.setContent(content);
-        postService.setPost(post);
+        postService.setPost(post,siteUser);
         return "redirect:/post/detail/" + postid;
     }
 

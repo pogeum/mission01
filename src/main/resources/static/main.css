@@ -52,3 +52,7 @@ a{
 .selectedbook {
     background:pink;
 }
+
+.toast-editor-custom {
+    background:white;
+}
