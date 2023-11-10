@@ -45,4 +45,7 @@ public class PostbookService {
         this.postbookRepository.save(postbook);
     }
 
+    public List<Postbook> getParentbookList() {
+        return postbookRepository.findByParentId(null);
+    }
 }

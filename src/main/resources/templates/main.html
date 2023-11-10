@@ -21,9 +21,9 @@
             <li>
                 <a class="nav-link" th:href="@{|/user/signup|}">회원가입</a>
             </li>
-            <li>
-                <a class="nav-link" th:href="@{|/user/login|}">로그인</a>
-            </li>
+<!--            <li>-->
+<!--                <a class="nav-link" th:href="@{|/user/login|}">로그인</a>-->
+<!--            </li>-->
 
             <!-- Open the modal using ID.showModal() method -->
             <button class="btn" onclick="my_modal_1.showModal()">노트이동</button>
@@ -54,19 +54,29 @@
     </div>
     <div class="content-wrap">
         <div class="postbook">
+
             <ul class="menu">
-                <li th:each="postbook : ${postbookList}"
-                    th:class="${postbook.id == targetPostbook.id} ? 'selectedbook' : 'b' ">
-                    <a th:href="@{|/postbook/detail/${postbook.id}|} th:if=${notebook.childList}"></a>
-<!--                    위에 하위노트가 없는 노트.-->
-<!--                    하위노트가 있는 노트-->
-                    <details>
-                        <summary th:text="${postbook.title}"></summary>
+
+<!--                <li th:if="${#lists.isEmpty(postbookList.postbook)}">-->
+                    <li th:if="${postbookList == null}">
+                    <div>
+                        Empty
+                    </div>
+                </li>
+                <li th:unless="${postbookList == null}" th:each="postbook : ${postbookList}" >
+
+                    <a th:class="${postbook.id == targetPostbook.id} ? 'selectedbook' : 'b' " th:href="@{|/postbook/detail/${postbook.id}|}" th:if="${#lists.isEmpty(postbook.childList)}" th:text="${postbook.title}"></a>
+                    <!--                    위에 하위노트가 없는 노트.-->
+                    <!--                    하위노트가 있는 노트-->
+                    <details th:unless="${#lists.isEmpty(postbook.childList)}">
+                        <summary th:class="${postbook.id == targetPostbook.id} ? 'selectedbook' : 'b' " >
+                            <a th:href="@{|/postbook/detail/${postbook.id}|}" th:text="${postbook.title}" ></a>
+                        </summary>
                         <!--                                데이터 바인딩해서 표현하기. -->
                         <ul>
-                            <li><a>level 2 item 1</a></li>
-                            <li><a>level 2 item 2</a></li>
-
+                            <li th:each="child : ${postbook.childList}" th:class="${child.id == targetPostbook.id} ? 'selectedbook' : 'b' ">
+                                <a th:href="@{|/postbook/detail/${child.id}|}" th:text="${child.title}"></a>
+                            </li>
                         </ul>
                     </details>
                 </li>
@@ -80,19 +90,39 @@
             <!--            </ul>-->
             <div>
                 <form th:action method="post">
-                    <div>
-                        <input type="hidden" name="postbookid" th:value="${targetPostbook.id}">
-                    </div>
+                    <ul>
+                        <li th:if="${postbookList == null}">
+                            Empty
+                        </li>
+                        <li th:unless="${postbookList == null}">
+                            <div>
+                                <input type="hidden" name="postbookid" th:value="${targetPostbook.id}">
+                            </div>
+                        </li>
+                    </ul>
+
                     <div>
                         <input type="submit" value="추가" formaction="/postbook/addpostbook">
                     </div>
                     <div>
-                        <input type="text" name="newtitle" th:value="${targetPostbook.title}">
+                        <li th:if="${postbookList == null}">
+                            Empty
+                        </li>
+                        <li th:unless="${postbookList == null}">
+                            <input type="text" name="newtitle" th:value="${targetPostbook.title}">
+                        </li>
+
                         <input type="button" value="수정" onclick="postbookmodifytitle(this, ACTIONS_POSTBOOKUPDATE)">
                     </div>
                     <div>
                         <input type="button" value="삭제"
                                onclick="postbookdeleteFormAction(this, ACTIONS_POSTBOOKDELETE)">
+                    </div>
+                    <div>
+
+                        <input type="text" name="keyword" placeholder="검색" >
+                        <input type="button" value="검색" onclick="postsearch(this, ACTIONS_POSTSEARCH)">
+
                     </div>
                 </form>
             </div>
@@ -100,13 +130,24 @@
         <div class="side-menu">
             <!--            3. 템플릿에서 게시물 목록 출력-->
             <ul>
-                <li th:each="post : ${postList}" th:class="${post.id == targetPost.id} ? 'selectedpost':''">
+                <li th:if="${postbookList == null}">
+                    <div>
+                        Empty
+                    </div>
+                </li>
+                <li th:unless="${postbookList == null}" th:each="post : ${postList}" th:class="${post.id == targetPost.id} ? 'selectedpost':''">
                     <a th:href="@{|/post/detail/${post.id}|}" th:text="${post.title}"></a>
                 </li>
             </ul>
             <div>
                 <form th:action="@{/post/addpost}" method="post">
-                    <input type="hidden" name="postbookid" th:value="${targetPostbook.id}">
+                    <li th:if="${postbookList == null}">
+                        Empty
+                    </li>
+                    <li th:unless="${postbookList == null}">
+                        <input type="hidden" name="postbookid" th:value="${targetPostbook.id}">
+                    </li>
+
                     <input type="submit" value="추가">
                 </form>
             </div>
@@ -114,13 +155,31 @@
         <div class="content">
             <form th:action id="postupdateForm" method="post">
                 <div>
-                    <input type="hidden" name="bookid" th:value="${targetPostbook.id}">
+                    <li th:if="${postbookList == null}">
+                        Empty
+                    </li>
+                    <li th:unless="${postbookList == null}">
+                        <input type="hidden" name="bookid" th:value="${targetPostbook.id}">
+                    </li>
+
                 </div>
                 <div>
-                    <input type="hidden" name="postid" th:value="${targetPost.id}">
+                    <li th:if="${postbookList == null}">
+                        Empty
+                    </li>
+                    <li th:unless="${postbookList == null}">
+                        <input type="hidden" name="postid" th:value="${targetPost.id}">
+                    </li>
+
                 </div>
                 <div>
-                    <input type="text" name="title" th:value="${targetPost.title}">
+                    <li th:if="${postbookList == null}">
+                        Empty
+                    </li>
+                    <li th:unless="${postbookList == null}">
+                        <input type="text" name="title" th:value="${targetPost.title}">
+                    </li>
+
                 </div>
                 <div class="toast-editor-custom">
                     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
@@ -181,6 +240,13 @@
             input.form.action = action.url;
             input.form.submit();
         }
+    }
+    ACTIONS_POSTSEARCH = {
+        'url' : '/post/search'
+    };
+    function postsearch(input, action) {
+        input.form.action = action.url;
+        input.form.submit();
     }
 </script>
 </body>

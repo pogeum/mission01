@@ -25,7 +25,7 @@ a{
 
 .postbook {
     background:darksalmon;
-    width:10%;
+    width:20%;
     height:800px;
     text-align: center;
     overflow: auto;
@@ -34,7 +34,7 @@ a{
 
 .side-menu {
     background: indianred;
-    width:10%;
+    width:20%;
     height:800px;
     text-align: center;
     overflow: auto;
@@ -42,7 +42,7 @@ a{
 
 .content {
     background: lightseagreen;
-    width:90%;
+    width:60%;
 }
 
 .selectedpost {

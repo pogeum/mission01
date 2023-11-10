@@ -27,12 +27,18 @@ public class PostbookController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/addpostbook") //여기서부터에러., 영속상태가아님? 둘다 서로 저장안해줘서그런가? 노노 레파지노리저장안해서?
     public String addpostbook(Principal principal) { //에러해결
-        Postbook postbook = postbookService.setDefaultPostbook();
-        SiteUser siteUser = this.userService.getUser(principal.getName());
-        Post post = postService.setDefaultPost(postbook,siteUser); //엔티티 연결은 주로 주도권가진애가 하는것?
+        if (userService.getloginuser().isEmpty()) {
+            return "redirect:/user/login";
+        } else {
+            Postbook postbook = postbookService.setDefaultPostbook();
+            SiteUser siteUser = this.userService.getUser(principal.getName());
+            Post post = postService.setDefaultPost(postbook); //엔티티 연결은 주로 주도권가진애가 하는것?
 //        post.setAuthor(user);
-        postbookService.addPostbook(postbook, post);
-        return "redirect:/postbook/detail/" + postbook.getId(); //하면 detail postbook id 는없어도될듯?
+            postbookService.addPostbook(postbook, post);
+            return "redirect:/postbook/detail/" + postbook.getId(); //하면 detail postbook id 는없어도될듯?
+        }
+
+
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -52,7 +58,7 @@ public class PostbookController {
         Postbook postbook = postbookService.findPostbook(postbookid); //타겟포스트북
 
         List<Post> postList = postbook.getPostList(); //타겟 포스트에 연결된 포스트리스트
-        List<Postbook> postbookList = postbookService.getbookList(); // 일단정렬할 포스트북리스트
+        List<Postbook> postbookList = postbookService.getParentbookList(); // 일단정렬할 포스트북리스트
 
         model.addAttribute("postbookList", postbookList);
         model.addAttribute("targetPostbook",postbook);
@@ -68,7 +74,7 @@ public class PostbookController {
     @PostMapping("/deletepostbook")
     public String delete(Long postbookid) { //이거어차피포스트북지우는데 cascaderemove안하면 자동으로 안지워지나?연결엔티티는?
         postbookService.deletePostbook(postbookid);
-        List<Postbook> postbookList = postbookService.getbookList();
+        List<Postbook> postbookList = postbookService.getParentbookList();
         Postbook postbook = postbookList.get(0);
         postbookid = postbook.getId();
         return "redirect:/postbook/detail/"+ postbookid; //수정하기
