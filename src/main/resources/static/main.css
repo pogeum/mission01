@@ -56,3 +56,11 @@ a{
 .toast-editor-custom {
     background:white;
 }
+
+.modal-box {
+    height : 70%;
+}
+.note-tree {
+    height : 80%;
+    border:1px solid black;
+}

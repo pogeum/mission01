@@ -22,4 +22,12 @@ public class Postbook {
     @OneToMany(mappedBy = "postbook",cascade = CascadeType.REMOVE)
     private List<Post> postList = new ArrayList<>();
 
+    @ManyToOne
+    private Postbook parent;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Postbook> childList;
+
+
+
 }

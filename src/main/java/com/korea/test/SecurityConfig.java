@@ -24,12 +24,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
                 .formLogin((formLogin) -> formLogin
-                        .loginPage("/user/login")
-                        .defaultSuccessUrl("/"))
+                        .loginPage("/user/login") //스프링시큐리티 기본제공 로그인페이지말고 내가만든 로그인페이지로 이동시키기
+                        .defaultSuccessUrl("/")) //로그인성공후 화면
                 .logout((logout) -> logout
                         .invalidateHttpSession(true)
                         .logoutSuccessUrl("/"))
-                         .oauth2Login(Customizer.withDefaults());
+                        .oauth2Login(Customizer.withDefaults());
 
 //                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
 
@@ -42,8 +42,10 @@ public class SecurityConfig {
 
     @Bean
     PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
+    //비번 암호화하는 ㅋㅗ드.
 
     @Bean
     AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception {

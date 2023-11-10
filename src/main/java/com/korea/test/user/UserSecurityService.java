@@ -31,6 +31,7 @@ public class UserSecurityService implements UserDetailsService {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
         }
         SiteUser siteUser = _siteUser.get();
+
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         if("admin".equals(username)) {//->아이디가 admin 인사람이 admin권한을 갖는거

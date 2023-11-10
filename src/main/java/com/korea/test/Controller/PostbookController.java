@@ -57,6 +57,8 @@ public class PostbookController {
         model.addAttribute("postbookList", postbookList);
         model.addAttribute("targetPostbook",postbook);
         model.addAttribute("postList", postList);
+        System.out.println(postbookList.size());//3
+        System.out.println(postList.size());//0
         model.addAttribute("targetPost",postList.get(0));
 
 
@@ -71,6 +73,4 @@ public class PostbookController {
         postbookid = postbook.getId();
         return "redirect:/postbook/detail/"+ postbookid; //수정하기
     }
-
-
 }
